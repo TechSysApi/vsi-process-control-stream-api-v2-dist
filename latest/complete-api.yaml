@@ -5,7 +5,7 @@ info:
   contact:
     name: 'Kay Herzam (Swiss Post)'
     email: kay.herzam@post.ch
-  version: 7.0.1
+  version: 7.1.0
 host: 'server:1883'
 basePath: mqtt
 parameters:
@@ -54,7 +54,7 @@ parameters:
       type: string
       default: '01'
 paths:
-  'vsi-process-control/v1/client/status/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/client/status/{srcSystem}/{srcInstance}':
     post:
       summary: '🔂[RETAINED] client connection state'
       description: 'Used to notify subscribers about client connection state changes'
@@ -66,7 +66,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'ClientStatus'}
-  'vsi-process-control/v1/device/state/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/state/{srcSystem}/{srcInstance}':
     post:
       summary: '🔂[RETAINED OPTIONAL] ATG-6 update machine state'
       description: 'Used to send state responses / updates from the device to the control. (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -78,7 +78,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'OverallState'}
-  'vsi-process-control/v1/control/state:set/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/control/state:set/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-6 Change machine state'
       description: 'Issue a set request to the device to change its state (or a sub module state).'
@@ -90,7 +90,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'OverallState'}
-  'vsi-process-control/v1/device/state:set:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/device/state:set:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-6 Change machine state'
       description: 'Issues the state update status (successful or unsuccesful) of a state:set operation'
@@ -102,7 +102,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'RequestStatus'}
-  'vsi-process-control/v1/device/parameter-metadata/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/parameter-metadata/{srcSystem}/{srcInstance}':
     post:
       summary: '🔂[RETAINED] ATG-7 update parameter list'
       description: 'Used to send a list of available parameters. The device publishes its parameter metadata at startup and whenever there is a change. (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -114,7 +114,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'ParameterMetadata'}
-  'vsi-process-control/v1/device/parameter-values/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/parameter-values/{srcSystem}/{srcInstance}':
     post:
       summary: '🔂[RETAINED OPTIONAL] ATG-7 update parameter values'
       description: 'Used to send a list of changed parameters from the device to the control. The device publishes its parameter values at startup and whenever there is a change. (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -126,7 +126,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'ParameterValues'}
-  'vsi-process-control/v1/control/parameter-values:set/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/control/parameter-values:set/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-7 change parameter values'
       description: 'Issue a set request to the device to change its parameter value(s).'
@@ -138,7 +138,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'ParameterValues'}
-  'vsi-process-control/v1/device/parameter-values:set:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/device/parameter-values:set:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-7 change parameter values status'
       description: 'Issues the parameter values update status (successful or unsuccesful) of a parameter-values:set operation'
@@ -150,7 +150,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'RequestStatus'}
-  'vsi-process-control/v1/device/messages/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/messages/{srcSystem}/{srcInstance}':
     post:
       summary: 'ATG-8 update messages'
       description: 'Used to send messages (alarms) from the device to the control. (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -162,7 +162,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'Messages'}
-  'vsi-process-control/v1/device/fill-levels/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/fill-levels/{srcSystem}/{srcInstance}':
     post:
       summary: 'ATG-9 update live data'
       description: 'Used to send live data (fill level) from the device to the control. (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -174,7 +174,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'FillLevels'}
-  'vsi-process-control/v1/device/read-rates/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/read-rates/{srcSystem}/{srcInstance}':
     post:
       summary: 'ATG-9 update live data'
       description: 'Used to send live data (read rate) from the device to the control. The frequency of the data event is configurable (default 1 minute). (Re-)Connected to ATG - The publisher needs to send (synchronize) the full state to the ATG.'
@@ -186,19 +186,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'ReadRates'}
-  'vsi-process-control/v1/device/track-events/{srcSystem}/{srcInstance}':
-    post:
-      summary: '[DEPRECATED] ATG-10 update track events'
-      description: "[DEPRECATED] Will be removed as soon as WESort is rolled out in all sorting centers. \nTrack Events are generated are sent by devices upon processing of a Mailpiece at different points of a sorting center. \n(Re-)Connected to ATG - The publisher needs to buffer all unsent messages for at least 1 day until the message is sent successfully to the ATG.\"\n"
-      tags:
-        - device
-      parameters:
-        -
-          $ref: 'undefined'
-      responses:
-        default:
-          schema: {$ref: 'TrackEvents'}
-  'vsi-process-control/v1/device/track-event/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/track-event/{srcSystem}/{srcInstance}':
     post:
       summary: 'ATG-10 update track event'
       description: "Used to send track event from the device to the control.\n(Re-)Connected to ATG - The publisher needs to buffer all unsent messages for at least 1 day until the message is sent successfully to the ATG.\n"
@@ -210,7 +198,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'TrackEvent'}
-  'vsi-process-control/v1/device/statistics/{srcSystem}/{srcInstance}':
+  '/{locationKey}/vsi-process-control/v7/device/statistics/{srcSystem}/{srcInstance}':
     post:
       summary: 'ATG-11 update statistics'
       description: 'Used to send statistics from the device to the control. The frequency of the data event is configurable (default 5 minutes). (Re-)Connected to ATG - The publisher needs to buffer all unsent messages for at least 1 day until the message is sent successfully to the ATG.'
@@ -222,7 +210,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'Statistics'}
-  'vsi-process-control/v1/control/software:restart/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/control/software:restart/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-13 Device-Software neustarten'
       description: 'Used to restart the device from the control'
@@ -234,7 +222,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'SoftwareRestartRequest'}
-  'vsi-process-control/v1/device/software:restart:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/device/software:restart:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-13 Device-Software neustarten'
       description: 'Issues the restart status (successful or unsuccesful) of a restart operation.'
@@ -246,7 +234,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'RequestStatus'}
-  'vsi-process-control/v1/control/hardware:reboot/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/control/hardware:reboot/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-14 Device-Hardware neustarten (boot)'
       description: 'Used to reboot the device''s host from the control'
@@ -258,7 +246,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'HardwareRebootRequest'}
-  'vsi-process-control/v1/device/hardware:reboot:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/device/hardware:reboot:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-14 Device-Hardware neustarten (boot)'
       description: 'Issues the reboot status (successful or unsuccesful) of a reboot operation.'
@@ -270,7 +258,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'RequestStatus'}
-  'vsi-process-control/v1/control/synchronize/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/control/synchronize/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-15 Device Synchronisieren'
       description: 'Requests a Device to synchronize with control'
@@ -282,7 +270,7 @@ paths:
       responses:
         default:
           schema: {$ref: 'SynchronizeRequest'}
-  'vsi-process-control/v1/device/synchronize:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
+  '/{locationKey}/vsi-process-control/v7/device/synchronize:status/{srcSystem}/{srcInstance}/{dstSystem}/{dstInstance}/{conversationId}':
     post:
       summary: 'ATG-15 Device Synchronisieren'
       description: 'Issues the synchronize status (successful or unsuccesful) of a synchronize operation.'
@@ -295,6 +283,63 @@ paths:
         default:
           schema: {$ref: 'RequestStatus'}
 definitions:
+  BarCodeStatus:
+    type: string
+    enum:
+      - NO_BARCODE
+      - DETECTED_AND_RECOGNIZED
+      - DETECTED_AND_NOT_RECOGNIZED
+    description: "# Description\n\nThis type defines the states a barcode can have.\n\n**NO_BARCODE**: The barcode symbol or the code value could not be detected.\n\n**DETECTED_AND_RECOGNIZED**: The barcode/matrix code matches at least one of the below patterns / validation rules\n\n**DETECTED_AND_NOT_RECOGNIZED**: The barcode/matrix code matches none of the below patterns / validation rules\n\n---\n\nOnly recognized barcodes/matrix codes such as productCodes should be used by consuming systems.\n\nNot recognized barcodes can be useful:\n- in case of new barcode formats\n- for systems outside of PL sorting systems\n- for (error) analysis\n\n# Patterns/ Validation Rules:\n\n## CODE_128\n\n   1. **Internationaler Barcode**\n\n       Beispiel: EP923689367CH  \n       Validierung: `[A-Z]{2}[0-9]{9}[A-Z]{2}` (13 Zeichen)\n\n   2. **Nationaler Barcode**\n\n       Beispiel: 994214393000008666  \n       Validierung: `(98|99)[0-9]{16}` (18 Zeichen)\n\n   3. **Produktcode: PRZL (Produkt/Zusatzleistungen)**\n\n       Beispiel: 0509  \n       Validierung: `[0-9]{4}` (4 Zeichen)\n\n   3. **BoxId**\n\n       Erste zwei Ziffern: Typ der Box: «45» für ThermoCare-Box, Letzte sechs Ziffern: Seriennummer der Box\n       Beispiel: 45093456\n       Validierung: `[0-9]{8}` (8 Zeichen)\n\n   4. **Förderhilfentyp**\n\n       Format: Erste zwei Ziffern: Typ der Förderhilfe, Letzte vier Ziffern: Gewicht der Förderhilfe in Gramm\n       Beispiel: 020450\n       Validierung: `[0-9]{6}` (6 Zeichen)\n\n## DATA_MATRIX \nDatenfeld: Data Matrix \n- Validierung: ECC200\nBeispiel: 756109025843770000010000000000000000000003489510005501606300\nValidierung: ECC200 (Max. 90 Zeichen)"
+    $id: null
+  BarCodeSymbology:
+    type: string
+    enum:
+      - CODE_128
+      - DATA_MATRIX
+    description: 'Provides the valid symbologies of a barcode label'
+    $id: null
+  BarCode:
+    type: object
+    properties:
+      type:
+        $ref: 'BarCodeSymbology'
+        description: 'Provides the valid symbologies of a barcode label.'
+      value:
+        type: string
+        description: 'This element contains the value of the barcode.'
+      status:
+        $ref: 'BarCodeStatus'
+        description: 'This element contains the status of the barcode.'
+    required:
+      - status
+    additionalProperties: false
+    description: 'This type contains a barcode.'
+    $id: null
+  BinOccupancyState:
+    type: object
+    properties:
+      emptyBinOccupied:
+        type: boolean
+      binMultipleItemOccupied:
+        type: boolean
+      frontOverlappingLimitExceeded:
+        type: boolean
+      backOverlappingLimitExceeded:
+        type: boolean
+      multipleItemsDetected:
+        type: boolean
+      conveyingAidDetected:
+        type: boolean
+    required:
+      - emptyBinOccupied
+      - binMultipleItemOccupied
+      - frontOverlappingLimitExceeded
+      - backOverlappingLimitExceeded
+      - multipleItemsDetected
+      - conveyingAidDetected
+    additionalProperties: false
+    description: "Doppelbelegung / Leerschalen-kontrolle\nemptyBinOccupied: Belegte Leerschale\nbinMultipleItemOccupied: Doppelbelegung - Erkennung der Schalenbelegung von DWS\nfrontOverlappingLimitExceeded: Überstand vorne zu groß\nbackOverlappingLimitExceeded: Überstand hinten zu groß\nmultipleItemsDetected: >= 2 Objekt erkannt\nconveyingAidDetected: Förderhilfe erkannt"
+    $id: null
   ClientState:
     type: string
     enum:
@@ -313,11 +358,61 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
     required:
       - state
+      - timestamp
+      - locationKey
     additionalProperties: false
+    $id: null
+  DimensionMeasurementRangeType:
+    type: string
+    enum:
+      - INSIDE
+      - OUTSIDE
+    description: "- INSIDE: Object is within the measurement range\n- OUTSIDE: Object is outside of the measurement range"
+    $id: null
+  DimensionMeasurementResultType:
+    type: string
+    enum:
+      - OK
+      - NOK
+      - NOT_RECOGNIZED
+    description: "Measurement result state.\n\n- OK: Measurement VMS ok\n- NOK: Measurement VMS not ok\n- NOT_RECOGNIZED: No object recognized"
+    $id: null
+  DimensionMeasurementState:
+    type: object
+    properties:
+      measurementResult:
+        $ref: 'DimensionMeasurementResultType'
+      measurementRange:
+        $ref: 'DimensionMeasurementRangeType'
+      itemSizeClassification:
+        $ref: 'ItemSizeClassificationType'
+    required:
+      - measurementResult
+      - measurementRange
+      - itemSizeClassification
+    additionalProperties: false
+    description: 'State of the measurement.'
+    $id: null
+  Dimension:
+    type: object
+    properties:
+      length:
+        type: integer
+        description: 'Length in [mm].'
+      width:
+        type: integer
+        description: 'Width in [mm].'
+      height:
+        type: integer
+        description: 'Height in [mm].'
+      state:
+        $ref: 'DimensionMeasurementState'
+    additionalProperties: false
+    description: 'Dimension measurement of the mail piece'
     $id: null
   FillLevel:
     type: object
@@ -364,7 +459,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       fillLevels:
         type: array
@@ -372,6 +467,7 @@ definitions:
           $ref: 'FillLevel'
     required:
       - timestamp
+      - locationKey
       - fillLevels
     additionalProperties: false
     description: 'Contains an array of fill levels.'
@@ -385,11 +481,141 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
     required:
       - timestamp
+      - locationKey
     additionalProperties: false
+    $id: null
+  InformationCarrier:
+    type: object
+    properties:
+      symbology:
+        $ref: 'Symbology'
+        description: 'Symbology of an information carrier'
+      value:
+        type: string
+        description: 'Value of an information carrier'
+    required:
+      - symbology
+      - value
+    additionalProperties: false
+    description: 'Identified and captured information carrier (e.g. barcodes, logos)'
+    $id: null
+  ItemSizeClassificationType:
+    type: object
+    properties:
+      ok:
+        type: boolean
+        description: "True: object size ok\nFalse: Object size not ok (over and/or undersized, see corresponding flags)"
+      oversized:
+        type: boolean
+        description: 'object too big to be measured'
+      undersized:
+        type: boolean
+        description: 'object too small to be measured'
+    required:
+      - ok
+      - oversized
+      - undersized
+    additionalProperties: false
+    $id: null
+  LegalForTradeState:
+    type: object
+    properties:
+      conveyorSpeedError:
+        type: boolean
+        description: 'Conveyor speed is out of tolerance.'
+      storageError:
+        type: boolean
+        description: 'Alibi storage error.'
+      dimensionError:
+        type: boolean
+        description: 'VMS data is not legal for trade.'
+      weightError:
+        type: boolean
+        description: 'Weight data not legal for trade.'
+    required:
+      - conveyorSpeedError
+      - storageError
+      - dimensionError
+      - weightError
+    additionalProperties: false
+    description: "Detailed information on legal for trade relevant measurements.\n\n- If all flags are false, the measurements are legal for trade.\n- If only weightError is true, dimension measurement is legal for trade.\n- If only dimensionError is true, weight measurement is legal for trade.\n- Otherwise, measurements are not legal for trade."
+    $id: null
+  LegalForTrade:
+    type: object
+    properties:
+      actualVolume:
+        type: integer
+        description: "# GER-TODO\n\nRealvolumen VMS#1 wenn VMS#1 = VMS420/520 Realvolumen = 000000 bei VMS#1 = VMS410/510\n[dm3]"
+        maxLength: 5
+      boxVolume:
+        type: integer
+        description: "Boxvolumen = Länge x Breite x Höhe\n[dm3]"
+        maxLength: 5
+      volumeRatio:
+        type: integer
+        description: 'Realvolumen / Boxvolumen in % ganzzahlig'
+      shape:
+        $ref: 'ShapeType'
+        description: 'Die Paketform.'
+      state:
+        $ref: 'LegalForTradeState'
+    additionalProperties: false
+    description: 'Customs information'
+    $id: null
+  Location:
+    type: object
+    properties:
+      face:
+        $ref: 'MailpieceFace'
+        description: "# GER-TODO\nZur Erkennung auf welcher Seite (welche Kamera) der Identcode gelesen wurde (z.B. für VCS…).\nDer Wert ist nur auf den Identcode (national) bezogen."
+      polygon:
+        $ref: 'Polygon'
+        description: "Achtung: Die Punkte in Förderrichtung durchnummeriert, im Unterschied zum CEN-Standard, wo sie im (Gegen-)Uhrzeigersinn ausgerichtet sind.\nDie Punkte werden wie folgt ermittelt/ausgegeben:\nerster Punkt in Förde-richtung ist der Start-punkt gezählt wird fortlaufend in Förderichtung (nicht Uhrzeigersinn)\nalle Angaben sind bezogen auf den Triggernullpunkt (= Schalenanfang) ‚x’ wird in Förderrichtung ermittelt; ‚y’ quer zur Förderrichtung"
+    additionalProperties: false
+    description: "To specify a region location, the region descriptor LocationT listed subsequently is used. LocationT encloses\nno information about the image orientation. The image orientation is specified in the TIFF header. Region\ncoordinates are given in pixel and are related to the image origin which corresponds to the upper left corner.\nThe coordinates are independent of the TIFF orientation."
+    $id: null
+  MailpieceAttr:
+    type: object
+    properties:
+      type:
+        $ref: 'MailpieceType'
+        description: 'Defines the type of the mail item.'
+      preknowledge:
+        $ref: 'RecognitionResult'
+        description: "Provides preknowledge to the RC System, e.g. a barcode\nresult if a barcode reader is integrated into the machine."
+    required:
+      - type
+    additionalProperties: false
+    description: "This type is taken from CEN/TS 15448 and extended by a “preknowledge” element.\nThe type MailpieceAttrT specifies basic mailpiece attributes."
+    $id: null
+  MailpieceFace:
+    type: string
+    enum:
+      - TOP
+      - LEFT
+      - RIGHT
+      - FRONT
+      - REAR
+      - BOTTOM
+      - FRONT_LEFT
+      - FRONT_RIGHT
+      - REAR_LEFT
+      - REAR_RIGHT
+    $id: null
+  MailpieceType:
+    type: string
+    enum:
+      - UNKNOWN
+      - LETTER
+      - LETTER_BUNDLE
+      - FLAT
+      - FLAT_BUNDLE
+      - PARCEL
+    description: "Defines the mailpiece type.\nUNKNOWN Unknown mailpiece type for the sorter\nLETTER Mail item (Brief)\nLETTER_BUNDLE Not supported\nFLAT Big letters mostly from China (Kleinware)\nFLAT_BUNDLE Bundle of mail items (Bund)\nPARCEL Parcel item (Paket)"
     $id: null
   MessagePriority:
     type: string
@@ -452,7 +678,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center (ONRP).'
         maxLength: 200
       messages:
         type: array
@@ -460,6 +686,7 @@ definitions:
           $ref: 'Message'
     required:
       - timestamp
+      - locationKey
       - messages
     additionalProperties: false
     description: 'Used to send message (alarms) from the device to the control.'
@@ -487,7 +714,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       machineState:
         type: integer
@@ -500,6 +727,7 @@ definitions:
         description: "The set of attributes transmitting substates of a Sorter. This elements stands for a specific visualisation element / state variable.\nThere exists as many instances of this attribute in the group as necessary to express all state information of the Sorter role."
     required:
       - timestamp
+      - locationKey
       - machineState
       - moduleStates
     additionalProperties: false
@@ -514,7 +742,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       parameters:
         type: array
@@ -524,6 +752,7 @@ definitions:
         minItems: 1
     required:
       - timestamp
+      - locationKey
       - parameters
     additionalProperties: false
     description: 'Contains exactly one main element, based on the use case (XOR).'
@@ -567,7 +796,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center'
         maxLength: 200
       parameterValues:
         type: array
@@ -577,6 +806,7 @@ definitions:
         minItems: 1
     required:
       - timestamp
+      - locationKey
       - parameterValues
     additionalProperties: false
     description: 'Contains exactly one main element, based on the use case (XOR).'
@@ -616,6 +846,29 @@ definitions:
       - description
     additionalProperties: false
     $id: null
+  PolygonDot:
+    type: object
+    properties:
+      x:
+        type: number
+      y:
+        type: number
+    required:
+      - x
+      - y
+    additionalProperties: false
+    $id: null
+  Polygon:
+    type: object
+    properties:
+      dot:
+        type: array
+        items:
+          $ref: 'PolygonDot'
+    required:
+      - dot
+    additionalProperties: false
+    $id: null
   ReadRate:
     type: object
     properties:
@@ -646,7 +899,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       readRates:
         type: array
@@ -654,8 +907,40 @@ definitions:
           $ref: 'ReadRate'
     required:
       - timestamp
+      - locationKey
     additionalProperties: false
     description: 'Contains an array of read rates.'
+    $id: null
+  RecognitionResult:
+    type: object
+    properties:
+      multipleMailpiecdIdRecognized:
+        type: boolean
+        description: "[DEPRECATED] Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nIf true, multiple identcodes were recognized by the camera."
+      informationCarriers:
+        type: array
+        items:
+          $ref: 'InformationCarrier'
+        description: "Contains the data from the information carrier identified by the reading system.\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
+      barCodes:
+        type: array
+        items:
+          $ref: 'BarCode'
+        description: "[DEPRECATED] Is replaced by the attribute informationCarriers. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nContains all barcodes/matrix codes identified by the reading system.\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
+      location:
+        $ref: 'Location'
+      dimension:
+        $ref: 'Dimension'
+        description: 'dimension of the mail piece.'
+      weight:
+        $ref: 'Weight'
+        description: 'weight of the mail piece.'
+      legalForTrade:
+        $ref: 'LegalForTrade'
+        description: 'Legal For Trade information.'
+      binOccupancy:
+        $ref: 'BinOccupancyState'
+    additionalProperties: false
     $id: null
   RequestState:
     type: string
@@ -673,7 +958,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       state:
         $ref: 'RequestState'
@@ -682,9 +967,16 @@ definitions:
         description: "May contain additional information on the status, e.g. error reason\nin case of ERROR. Messages are not meant to be processed\nautomatically but should just be used for problem\ntracking."
     required:
       - timestamp
+      - locationKey
       - state
     additionalProperties: false
     description: 'Response of the device to a Request.'
+    $id: null
+  ShapeType:
+    type: string
+    enum:
+      - CUBIC
+      - IRREGULAR
     $id: null
   SoftwareRestartRequest:
     type: object
@@ -695,10 +987,11 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center (ONRP).'
         maxLength: 200
     required:
       - timestamp
+      - locationKey
     additionalProperties: false
     $id: null
   SortReason:
@@ -727,7 +1020,7 @@ definitions:
       - DIRECT_SORTING_MODE
       - ITEM_NO_SORTCODE
       - OUTLET_MISSED
-    description: "Defines the machine specific sort reasons.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- OK: Discharge OK. This describes just a \"regular\" item\n- MAX_RECIRCULATION: Item has reached the max allowed amount of recirculations.\n- ITEM_NO_READ: [DEPCRECATED] Item has reached the max allowed amount of scans and the last attempt was a no read.\n- ITEM_MULTIPLE_READ: [DEPCRECATED] Multiple national or international id barcodes could be identified.\n- SCANNER_TIMEOUT: Item has reached the max allowed amount of scans and the last attempt was a \"no answer\" from scanner.\n- ITEM_STRAY: Stray item detected.\n- ITEM_INDUCTION_ERROR: Induction error item detected (occupied twice, wrong tray).\n- ITEM_DISCHARGE_ERROR: Discharge faults.\n- ITEM_ERROR: Item has a Logical error.\n- ITEM_TRACKING_ERROR: item was inducted with tracking fault.\n- ITEM_OCCUPIED_TWICE_ERROR: item was inducted on occupied tray.\n- ITEM_DISAPPEARED: The parcel was lost at unknown location.\n- OUTLET_NOT_AVAILABLE: No available chute could be found.\n- OUTLET_UNKNOWN: Logical destination not defined.\n- UNDEFINED_ERROR: Internal error happened.\n- NO_CAPACITY: The destination outlet has no more capacity.\n- DIMENSION_ERROR: Item oversize. The parcel was discharge, because of dimension exceed.\n- WEIGHT_ERROR: Item too heavy. The parcel was discharge, because of weight exceed.\n- SORTPLAN_ERROR: Sortplan error.\n- DIRECT_SORTING_MODE: Item sorted by the direct sorting mode.\n- ITEM_NO_SORTCODE: No sortcode has been received for this item.\n- OUTLET_MISSED: Sortcode has been updated (push or repetitive requests), physical outlet already passed."
+    description: "Defines the machine specific sort reasons.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- OK: Discharge OK. This describes just a \"regular\" item\n- MAX_RECIRCULATION: Item has reached the max allowed amount of recirculations.\n- ITEM_NO_READ: Item has reached the max allowed amount of scans and the last attempt was a no read.\n- ITEM_MULTIPLE_READ: Multiple national or international id barcodes could be identified.\n- SCANNER_TIMEOUT: Item has reached the max allowed amount of scans and the last attempt was a \"no answer\" from scanner.\n- ITEM_STRAY: Stray item detected.\n- ITEM_INDUCTION_ERROR: Induction error item detected (occupied twice, wrong tray).\n- ITEM_DISCHARGE_ERROR: Discharge faults.\n- ITEM_ERROR: Item has a Logical error.\n- ITEM_TRACKING_ERROR: item was inducted with tracking fault.\n- ITEM_OCCUPIED_TWICE_ERROR: item was inducted on occupied tray.\n- ITEM_DISAPPEARED: The parcel was lost at unknown location.\n- OUTLET_NOT_AVAILABLE: No available chute could be found.\n- OUTLET_UNKNOWN: Logical destination not defined.\n- UNDEFINED_ERROR: Internal error happened.\n- NO_CAPACITY: The destination outlet has no more capacity.\n- DIMENSION_ERROR: Item oversize. The parcel was discharge, because of dimension exceed.\n- WEIGHT_ERROR: Item too heavy. The parcel was discharge, because of weight exceed.\n- SORTPLAN_ERROR: Sortplan error.\n- DIRECT_SORTING_MODE: Item sorted by the direct sorting mode.\n- ITEM_NO_SORTCODE: No sortcode has been received for this item.\n- OUTLET_MISSED: Sortcode has been updated (push or repetitive requests), physical outlet already passed."
     $id: null
   SortingProcess:
     type: string
@@ -737,7 +1030,7 @@ definitions:
       - MANUAL_CODING_LIGHT
       - MANUAL_CODING_BULK
       - MANUAL_CODING_BULK_AUTOMATIC
-    description: "Defines the sorting process.\r\nAUTOMATIC Sorted by the sorter\r\nMANUAL_CODING_REJECT Device where a coder manually captures barcodes and enters address information\r\nMANUAL_CODING_LIGHT Device where barcodes barcodes, products and the weight is captured (manual or partially automated)\r\nMANUAL_CODING_BULK Device where barcodes, weight and dimensions and address information for bulky goods are captured or entered (manual or partially automated)\r\nMANUAL_CODING_BULK_AUTOMATIC Device where a coder manually captures barcodes and other specific information for bulky goods"
+    description: "Defines the sorting process.\nAUTOMATIC Sorted by the sorter\nMANUAL_CODING_REJECT Device where a coder manually captures barcodes and enters address information\nMANUAL_CODING_LIGHT Device where barcodes barcodes, products and the weight is captured (manual or partially automated)\nMANUAL_CODING_BULK Device where barcodes, weight and dimensions and address information for bulky goods are captured or entered (manual or partially automated)\nMANUAL_CODING_BULK_AUTOMATIC Device where a coder manually captures barcodes and other specific information for bulky goods"
     $id: null
   StatisticsType:
     type: string
@@ -762,7 +1055,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       stats:
         type: array
@@ -770,6 +1063,7 @@ definitions:
           $ref: 'Stats'
     required:
       - timestamp
+      - locationKey
     additionalProperties: false
     description: 'Used to send statistics data from the device to the control.'
     $id: null
@@ -802,673 +1096,6 @@ definitions:
     additionalProperties: false
     description: 'The statistic event of an element. The statistic will be used for visualization and control purposes.'
     $id: null
-  SynchronizeRequest:
-    type: object
-    properties:
-      timestamp:
-        type: string
-        description: 'The date+timestamp which identifies the point in time, when control requested the synchronization of the device.'
-        format: date-time
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-    required:
-      - timestamp
-    additionalProperties: false
-    $id: null
-  TrackEventType:
-    type: string
-    enum:
-      - UNKNOWN
-      - READ
-      - INDUCTION
-      - TRACK
-      - DISCHARGE
-      - READ_BULK
-    description: "Defines the track event type.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- READ: Event occured when reading at the tunnel\n- INDUCTION: Event occurred during induction\n- TRACK: Event occurred on the sorter\n- DISCHARGE: Event occurred during discharge\n- READ_BULK: Event occured when reading Bulk"
-    $id: null
-  UUID:
-    type: string
-    description: "<a href=\"https://swagger.io/docs/specification/data-models/data-types/#string\">String @format uuid</a>\n(even '@format uuid' is not specified)."
-    format: uuid
-    $id: null
-  TrackEvent:
-    type: object
-    properties:
-      timestamp:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nThe date+timestamp which identifies the point in time, where the information was generated, including milliseconds."
-        format: date-time
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-      eventType:
-        $ref: 'TrackEventType'
-        description: 'The type of Track Event'
-      processPoint:
-        type: string
-        description: 'The location where the information was generated. (Siehe Anlagen Bezeichnungskonzept)'
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nDefines the sorting process."
-      itemId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nThe id of the mailpiece assigned by the sorting machine during sorting."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      dischargeReason:
-        $ref: 'SortReason'
-        description: "[DEPRECATED] Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nReason of discharge. Only relevant for discharge events."
-      sourceId:
-        type: string
-        description: 'Refers to a module id as event-source, e.g. DWS02'
-        pattern: '[A-Z]{3}[0-9]{2}'
-      blockId:
-        $ref: 'UUID'
-        description: 'Identifier to track a group of parcels.'
-      mailpieceAttributes:
-        $ref: 'MailpieceAttr'
-        description: "<b>Dependency:</b> The MailpieceAttrT type is imported from cen-mc-rc-stream-api where it is used for the submit-mailpiece topic\nThe MailpieceAttrT type provides basic mailpiece related information:\n- the kind of the mail item\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\n   This result will be in accordance with the result type specified in the IC-ED interface."
-    required:
-      - eventType
-      - processPoint
-      - itemId
-      - sourceId
-    additionalProperties: false
-    description: 'The track event of an parcel. The event will be used for statistic purpose.'
-    $id: null
-  TrackEvents:
-    type: object
-    properties:
-      timestamp:
-        type: string
-        description: 'The date+timestamp which identifies the point in time, where the information was generated, including milliseconds.'
-        format: date-time
-      trackEvents:
-        type: array
-        items:
-          $ref: 'TrackEvent'
-    required:
-      - timestamp
-      - trackEvents
-    additionalProperties: false
-    description: 'This element represents an event-driven data generation of a piece of MPE.'
-    $id: null
-  Int:
-    type: integer
-    description: '<a href="https://swagger.io/docs/specification/data-models/data-types/#numbers">Number @asType integer</a>'
-    $id: null
-  Long:
-    type: integer
-    description: '<a href="https://swagger.io/docs/specification/data-models/data-types/#numbers">Number @asType integer</a> as signed 64-bit long integer.'
-    minimum: -9223372036854775000
-    maximum: 9223372036854775000
-    format: int64
-    $id: null
-  AddressResult:
-    type: object
-    properties:
-      outletGroup:
-        $ref: 'OutletGroup'
-        description: "The outlet group containing the outlets\n[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers."
-      code:
-        type: integer
-        description: "The destination sort code is the outlet group name (Virtuelles Ziel) assigned to the mail piece.\nSpecific values are defined on a per-program basis."
-        maxLength: 3
-      rejectReasons:
-        type: array
-        items:
-          type: string
-        description: "This string element contains a reason why the RC System was unable to determine a result or has identified a special case.\nThe sorting machine needs to recognize the reject reason in order to sort the parcel to a special sortbin."
-      parcelHouseKey:
-        $ref: 'Long'
-        description: "Below this remark follow non-cen fields  \n [This is no CEN-Field]\nIdentifiziert die Adresse, welche auf dem Paket aufgedruckt ist.\nDieser „Paket-HausKey“ kann eine Domizil Adresse, eine Postfachadresse, oder eine Pickpost Adresse sein."
-      domicilHouseKey:
-        $ref: 'Long'
-        description: "[This is no CEN-Field]\nIdentifiziert die Domiziladresse (DHKEY) der KDPID (personAddressKey)\nKann unterschiedlich sein bei Umleitungen usw."
-      personAddressKey:
-        $ref: 'Long'
-        description: "[This is no CEN-Field]\nIdentifiziert eine Person an einer (aktuellen) Domiziladresse eindeutig.\nÜber die History können die Wohnungswechsel der Person nachverfolgt werden.\nWenn Person mehrerer Häuser hat, kann sie auch mehrere Keys haben.\nSynonym zum AMP-Key"
-      addressPostcode6:
-        $ref: 'Int'
-        description: "[This is no CEN-Field]\n(DEPRECATED!)\nDie Erfassung liefert die 6-stellige Postleitzahl der auf dem Paket adressierten Adresse\nSechstellige PLZ (PLZ6), welche in der Sortierung verwendet wird.\nBesteht aus vierstelliger PLZ + zwei Stellen für dienstliche Angaben\n(AMPplus: Postleitzahl)\n\nNachfolgend erklärt an dem Beispiel: 188070 - Bex Paketfiliale\n\nGeografische Lage (erste vier Zahlen):\n1 = Leitkreis\n18 = Leitgebiet\n188 = Laufstrecke\n1880 = Bex\n\nMögliche dienstliche Angaben (letzte zwei Zahlen)\n56, 57 = Zoll, Import/Export\n60 = Briefzustellung\n61 = Postfach\n70 = Paketzustellung\n72 = Expresszustellung\n74 = Postautodienst\n75 = Kaserne"
-        maxLength: 6
-      streetKey:
-        $ref: 'Int'
-        description: "[This is no CEN-Field]\nDie Erfassung liefert die Nummer der Strasse in der Adresse des Pakets.\nFür jede Strasse, bei der ein Paketbote alle oder einen Teil der Pakete zustellt, gibt es in ZUBOFI eine Strassennummer. Die Erfassung liefert diese Nummer.\nBeispiel: 206190\n\nKey of the street"
-      houseNumber:
-        $ref: 'Int'
-        description: "[This is no CEN-Field]\nDie Erfassung liefert die Hausnummer der auf dem Paket adressierten Adresse"
-      houseNumberExtension:
-        type: string
-        description: "[This is no CEN-Field]\nDie Erfassung liefert den Hausnummerzusatz der auf dem Paket adressierten Adresse (alt. houseNumberAddOn)"
-        maxLength: 6
-      parcelAddressType:
-        $ref: 'AddressType'
-        description: "[This is no CEN-Field]\n(DEPRECATED!)\nBeschreibt den Adresstyp vom Paket."
-      destinationRegion:
-        type: string
-        description: "[This is no CEN-Field]\nDestination region of the mailpiece\nZielregion, zB. HAE1"
-      sortCode:
-        type: string
-        description: "[This is no CEN-Field]\nProprietary Swiss Post Sort Code\n\nAll numbers:\n  __________ _____________________ ___________ _____ ________________\n| Postcode | Post Code Extension | Code Type | BBZ | SequenceNumber |\n|     4    |           2         |      1    |  3  |        4       |\n\ni.e. 17620013610850"
-    required:
-      - code
-    additionalProperties: false
-    $id: null
-  AddressType:
-    type: string
-    enum:
-      - DOMICILE_ADDRESS
-      - POBOX_ADDRESS
-      - MILITARY_ADDRESS
-      - OVERSEAS_ADDRESS
-      - DOMICILE_CORRECTION_ADDRESS
-      - POBOX_CORRECTION_ADDRESS
-      - PAKETBASE_INTERNAL_ADDRESS
-      - VCS_EXPIRED_INTERNAL_ADDRESS
-      - MCS_REJECT_INTERNAL_ADDRESS
-      - DEFERRED_VCS_INTERNAL_ADDRESS
-      - TEST_TARGET_INTERNAL_ADDRESS
-    description: "DOMICILE_ADDRESS(Old Value = D)\nPOBOX_ADDRESS(Old Value = F)\nMILITARY_ADDRESS(Old Value = M)\nOVERSEAS_ADDRESS(Old Value = A)\nDOMICILE_CORRECTION_ADDRESS(Old Value = K)\nPOBOX_CORRECTION_ADDRESS(Old Value = L)\nPAKETBASE_INTERNAL_ADDRESS(Old Value = X)\nVCS_EXPIRED_INTERNAL_ADDRESS(Old Value = E)\nMCS_REJECT_INTERNAL_ADDRESS(Old Value = R)\nDEFERRED_VCS_INTERNAL_ADDRESS(Old Value = V)\nTEST_TARGET_INTERNAL_ADDRESS(Old Value = T)"
-    $id: null
-  BarCodeStatus:
-    type: string
-    enum:
-      - NO_BARCODE
-      - DETECTED_AND_RECOGNIZED
-      - DETECTED_AND_NOT_RECOGNIZED
-    description: "# Description\r\n\r\nThis type defines the states a barcode can have.\r\n\r\n**NO_BARCODE**: The barcode symbol or the code value could not be detected.\r\n\r\n**DETECTED_AND_RECOGNIZED**: The barcode/matrix code matches at least one of the below patterns / validation rules\r\n\r\n**DETECTED_AND_NOT_RECOGNIZED**: The barcode/matrix code matches none of the below patterns / validation rules\r\n\r\n---\r\n\r\nOnly recognized barcodes/matrix codes such as productCodes should be used by consuming systems.\r\n\r\nNot recognized barcodes can be useful:\r\n- in case of new barcode formats\r\n- for systems outside of PL sorting systems\r\n- for (error) analysis\r\n\r\n# Patterns/ Validation Rules:\r\n\r\n## CODE_128\r\n\r\n   1. **Internationaler Barcode**\r\n\r\n       Beispiel: EP923689367CH  \r\n       Validierung: `[A-Z]{2}[0-9]{9}[A-Z]{2}` (13 Zeichen)\r\n\r\n   2. **Nationaler Barcode**\r\n\r\n       Beispiel: 994214393000008666  \r\n       Validierung: `(98|99)[0-9]{16}` (18 Zeichen)\r\n\r\n   3. **Produktcode: PRZL (Produkt/Zusatzleistungen)**\r\n\r\n       Beispiel: 0509  \r\n       Validierung: `[0-9]{4}` (4 Zeichen)\r\n\r\n   3. **BoxId**\r\n\r\n       Erste zwei Ziffern: Typ der Box: «45» für ThermoCare-Box, Letzte sechs Ziffern: Seriennummer der Box\r\n       Beispiel: 45093456\r\n       Validierung: `[0-9]{8}` (8 Zeichen)\r\n\r\n   4. **Förderhilfentyp**\r\n\r\n       Format: Erste zwei Ziffern: Typ der Förderhilfe, Letzte vier Ziffern: Gewicht der Förderhilfe in Gramm\r\n       Beispiel: 020450\r\n       Validierung: `[0-9]{6}` (6 Zeichen)\r\n\r\n## DATA_MATRIX \r\nDatenfeld: Data Matrix \r\n- Validierung: ECC200\r\nBeispiel: 756109025843770000010000000000000000000003489510005501606300\r\nValidierung: ECC200 (Max. 90 Zeichen)"
-    $id: null
-  BarCodeSymbology:
-    type: string
-    enum:
-      - CODE_128
-      - DATA_MATRIX
-    description: 'Provides the valid symbologies of a barcode label'
-    $id: null
-  BarCode:
-    type: object
-    properties:
-      type:
-        $ref: 'BarCodeSymbology'
-        description: 'Provides the valid symbologies of a barcode label.'
-      value:
-        type: string
-        description: 'This element contains the value of the barcode.'
-      status:
-        $ref: 'BarCodeStatus'
-        description: 'This element contains the status of the barcode.'
-    required:
-      - status
-    additionalProperties: false
-    description: 'This type contains a barcode.'
-    $id: null
-  BinOccupancyState:
-    type: object
-    properties:
-      emptyBinOccupied:
-        type: boolean
-      binMultipleItemOccupied:
-        type: boolean
-      frontOverlappingLimitExceeded:
-        type: boolean
-      backOverlappingLimitExceeded:
-        type: boolean
-      multipleItemsDetected:
-        type: boolean
-      conveyingAidDetected:
-        type: boolean
-    required:
-      - emptyBinOccupied
-      - binMultipleItemOccupied
-      - frontOverlappingLimitExceeded
-      - backOverlappingLimitExceeded
-      - multipleItemsDetected
-      - conveyingAidDetected
-    additionalProperties: false
-    description: "Doppelbelegung / Leerschalen-kontrolle\r\nemptyBinOccupied: Belegte Leerschale\r\nbinMultipleItemOccupied: Doppelbelegung - Erkennung der Schalenbelegung von DWS\r\nfrontOverlappingLimitExceeded: Überstand vorne zu groß\r\nbackOverlappingLimitExceeded: Überstand hinten zu groß\r\nmultipleItemsDetected: >= 2 Objekt erkannt\r\nconveyingAidDetected: Förderhilfe erkannt"
-    $id: null
-  DimensionMeasurementRangeType:
-    type: string
-    enum:
-      - INSIDE
-      - OUTSIDE
-    description: "- INSIDE: Object is within the measurement range\r\n- OUTSIDE: Object is outside of the measurement range"
-    $id: null
-  DimensionMeasurementResultType:
-    type: string
-    enum:
-      - OK
-      - NOK
-      - NOT_RECOGNIZED
-    description: "Measurement result state.\r\n\r\n- OK: Measurement VMS ok\r\n- NOK: Measurement VMS not ok\r\n- NOT_RECOGNIZED: No object recognized"
-    $id: null
-  DimensionMeasurementState:
-    type: object
-    properties:
-      measurementResult:
-        $ref: 'DimensionMeasurementResultType'
-      measurementRange:
-        $ref: 'DimensionMeasurementRangeType'
-      itemSizeClassification:
-        $ref: 'ItemSizeClassificationType'
-    required:
-      - measurementResult
-      - measurementRange
-      - itemSizeClassification
-    additionalProperties: false
-    description: 'State of the measurement.'
-    $id: null
-  Dimension:
-    type: object
-    properties:
-      length:
-        type: integer
-        description: 'Length in [mm].'
-      width:
-        type: integer
-        description: 'Width in [mm].'
-      height:
-        type: integer
-        description: 'Height in [mm].'
-      state:
-        $ref: 'DimensionMeasurementState'
-    additionalProperties: false
-    description: 'Dimension measurement of the mail piece'
-    $id: null
-  InformationCarrier:
-    type: object
-    properties:
-      symbology:
-        $ref: 'Symbology'
-        description: 'Symbology of an information carrier'
-      value:
-        type: string
-        description: 'Value of an information carrier'
-    required:
-      - symbology
-      - value
-    additionalProperties: false
-    description: 'Identified and captured information carrier (e.g. barcodes, logos)'
-    $id: null
-  ItemSizeClassificationType:
-    type: object
-    properties:
-      ok:
-        type: boolean
-        description: "True: object size ok\r\nFalse: Object size not ok (over and/or undersized, see corresponding flags)"
-      oversized:
-        type: boolean
-        description: 'object too big to be measured'
-      undersized:
-        type: boolean
-        description: 'object too small to be measured'
-    required:
-      - ok
-      - oversized
-      - undersized
-    additionalProperties: false
-    $id: null
-  LegalForTradeState:
-    type: object
-    properties:
-      conveyorSpeedError:
-        type: boolean
-        description: 'Conveyor speed is out of tolerance.'
-      storageError:
-        type: boolean
-        description: 'Alibi storage error.'
-      dimensionError:
-        type: boolean
-        description: 'VMS data is not legal for trade.'
-      weightError:
-        type: boolean
-        description: 'Weight data not legal for trade.'
-    required:
-      - conveyorSpeedError
-      - storageError
-      - dimensionError
-      - weightError
-    additionalProperties: false
-    description: "Detailed information on legal for trade relevant measurements.\r\n\r\n- If all flags are false, the measurements are legal for trade.\r\n- If only weightError is true, dimension measurement is legal for trade.\r\n- If only dimensionError is true, weight measurement is legal for trade.\r\n- Otherwise, measurements are not legal for trade."
-    $id: null
-  LegalForTrade:
-    type: object
-    properties:
-      actualVolume:
-        type: integer
-        description: "# GER-TODO\r\n\r\nRealvolumen VMS#1 wenn VMS#1 = VMS420/520 Realvolumen = 000000 bei VMS#1 = VMS410/510\r\n[dm3]"
-        maxLength: 5
-      boxVolume:
-        type: integer
-        description: "Boxvolumen = Länge x Breite x Höhe\r\n[dm3]"
-        maxLength: 5
-      volumeRatio:
-        type: integer
-        description: 'Realvolumen / Boxvolumen in % ganzzahlig'
-      shape:
-        $ref: 'ShapeType'
-        description: 'Die Paketform.'
-      state:
-        $ref: 'LegalForTradeState'
-    additionalProperties: false
-    description: 'Customs information'
-    $id: null
-  Location:
-    type: object
-    properties:
-      face:
-        $ref: 'MailpieceFace'
-        description: "# GER-TODO\r\nZur Erkennung auf welcher Seite (welche Kamera) der Identcode gelesen wurde (z.B. für VCS…).\r\nDer Wert ist nur auf den Identcode (national) bezogen."
-      polygon:
-        $ref: 'Polygon'
-        description: "Achtung: Die Punkte in Förderrichtung durchnummeriert, im Unterschied zum CEN-Standard, wo sie im (Gegen-)Uhrzeigersinn ausgerichtet sind.\r\nDie Punkte werden wie folgt ermittelt/ausgegeben:\r\nerster Punkt in Förde-richtung ist der Start-punkt gezählt wird fortlaufend in Förderichtung (nicht Uhrzeigersinn)\r\nalle Angaben sind bezogen auf den Triggernullpunkt (= Schalenanfang) ‚x’ wird in Förderrichtung ermittelt; ‚y’ quer zur Förderrichtung"
-    additionalProperties: false
-    description: "To specify a region location, the region descriptor LocationT listed subsequently is used. LocationT encloses\r\nno information about the image orientation. The image orientation is specified in the TIFF header. Region\r\ncoordinates are given in pixel and are related to the image origin which corresponds to the upper left corner.\r\nThe coordinates are independent of the TIFF orientation."
-    $id: null
-  MailpieceAttr:
-    type: object
-    properties:
-      type:
-        $ref: 'MailpieceType'
-        description: 'Defines the type of the mail item.'
-      preknowledge:
-        $ref: 'RecognitionResult'
-        description: "Provides preknowledge to the RC System, e.g. a barcode\r\nresult if a barcode reader is integrated into the machine."
-    required:
-      - type
-    additionalProperties: false
-    description: "This type is taken from CEN/TS 15448 and extended by a “preknowledge” element.\r\nThe type MailpieceAttrT specifies basic mailpiece attributes."
-    $id: null
-  MailpieceFace:
-    type: string
-    enum:
-      - TOP
-      - LEFT
-      - RIGHT
-      - FRONT
-      - REAR
-      - BOTTOM
-      - FRONT_LEFT
-      - FRONT_RIGHT
-      - REAR_LEFT
-      - REAR_RIGHT
-    $id: null
-  MailpieceType:
-    type: string
-    enum:
-      - UNKNOWN
-      - LETTER
-      - LETTER_BUNDLE
-      - FLAT
-      - FLAT_BUNDLE
-      - PARCEL
-    description: "Defines the mailpiece type.\r\nUNKNOWN Unknown mailpiece type for the sorter\r\nLETTER Mail item (Brief)\r\nLETTER_BUNDLE Not supported\r\nFLAT Big letters mostly from China (Kleinware)\r\nFLAT_BUNDLE Bundle of mail items (Bund)\r\nPARCEL Parcel item (Paket)"
-    $id: null
-  OutletArea:
-    type: string
-    enum:
-      - UNKNOWN
-      - STANDARD_AREA
-      - SEQUENCED_AREA
-      - REJECT_AREA
-      - SEQUENCED_OVERFLOW_AREA
-      - MANUAL_CODING_STATION_AREA
-    description: "Defines the outlet area. SEQ_AREA and SEQ_OV_AREA are not used for parcel sorting.\n- UNKNOWN: Default enum value to map not supported values.\n- STANDARD_AREA (STD_AREA): Area used for non-sequenced mail piece;\n- SEQUENCED_AREA(SEQ_AREA): Area used for sequenced mail piece;\n- REJECT_AREA: Area for SpecialSort: application specific (ZDS.SpecialVZ) or machine specific (ASL) destinations.\n- SEQUENCED_OVERFLOW_AREA(SEQ_OV_AREA): Area for overflow stackers, typically used in the 1st pass when the mail volume is not yet precisely known. This area consists of all the remaining stackers.\n- MANUAL_CODING_STATION_AREA (MCS_AREA): Area for manual coding systems"
-    $id: null
-  OutletGroup:
-    type: object
-    properties:
-      name:
-        type: string
-        description: "A unique key inside the sort plan to identify this occurrence of OutletGroup\nPrimary key 🔑"
-        maxLength: 200
-      specialType:
-        $ref: 'OutletArea'
-        description: 'Defines the usage made of the outlet group.'
-      outlets:
-        type: array
-        items:
-          $ref: 'Outlet'
-        description: "The list of physical outlets to be used.\ni.e. Endstellen"
-      positions:
-        type: array
-        items:
-          $ref: 'Position'
-        description: "The list of positions to be used.\ni.e. RX-Stellplatz"
-    required:
-      - name
-    additionalProperties: false
-    description: 'Groupings of physical outlets for each sequencing pass'
-    $id: null
-  Outlet:
-    type: object
-    properties:
-      name:
-        type: string
-        description: 'The name of the outlet.'
-        maxLength: 200
-    required:
-      - name
-    additionalProperties: false
-    description: 'A physical outlet'
-    $id: null
-  PolygonDot:
-    type: object
-    properties:
-      x:
-        type: number
-      y:
-        type: number
-    required:
-      - x
-      - y
-    additionalProperties: false
-    $id: null
-  Polygon:
-    type: object
-    properties:
-      dot:
-        type: array
-        items:
-          $ref: 'PolygonDot'
-    required:
-      - dot
-    additionalProperties: false
-    $id: null
-  Position:
-    type: object
-    properties:
-      name:
-        type: string
-        description: "An unique key inside the sort plan to identify\nthis occurrence of Position 🔑"
-        maxLength: 200
-      outletPosition:
-        type: string
-        description: "The position within an outlet.\ni.e. \"1\" or \"A\""
-        maxLength: 200
-      outlet:
-        type: string
-        description: "The outlet name, where this position belongs to.\nThis is only needed, if this position is related to an outlet.\ni.e. for bulk sorting, no outlet is available."
-        maxLength: 200
-      priority:
-        $ref: 'Int'
-        description: "Priority of the Position.\nThis is used for the distribution strategy.\n0 = Low priority"
-        minimum: 0
-    required:
-      - name
-      - priority
-    additionalProperties: false
-    description: 'A positions to sort to.'
-    $id: null
-  RecognitionResult:
-    type: object
-    properties:
-      multipleMailpiecdIdRecognized:
-        type: boolean
-        description: "[DEPRECATED] Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\r\nIf true, multiple identcodes were recognized by the camera."
-      informationCarriers:
-        type: array
-        items:
-          $ref: 'InformationCarrier'
-        description: "Contains the data from the information carrier identified by the reading system.\r\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
-      barCodes:
-        type: array
-        items:
-          $ref: 'BarCode'
-        description: "[DEPRECATED] Is replaced by the attribute informationCarriers. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\r\nContains all barcodes/matrix codes identified by the reading system.\r\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
-      location:
-        $ref: 'Location'
-      dimension:
-        $ref: 'Dimension'
-        description: 'dimension of the mail piece.'
-      weight:
-        $ref: 'Weight'
-        description: 'weight of the mail piece.'
-      legalForTrade:
-        $ref: 'LegalForTrade'
-        description: 'Legal For Trade information.'
-      binOccupancy:
-        $ref: 'BinOccupancyState'
-    additionalProperties: false
-    $id: null
-  RequestMailpieceAttributes:
-    type: object
-    properties:
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nDefines the sorting process."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      sortReasons:
-        type: array
-        items:
-          $ref: 'SortReason'
-        description: 'The current list of machine specific sort reasons.'
-      idTag:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute idTags. Attribute will be removed in future releases when all target systems use the new field idTags.\nRepresents a long living identifier for the mail item"
-        maxLength: 200
-      timestamp:
-        type: string
-        description: 'Timestamp of data collection.'
-        format: date-time
-      sourceId:
-        type: string
-        description: 'Refers to a module id as event-source.'
-        pattern: '[A-Z]{3}[0-9]{2}'
-    required:
-      - timestamp
-      - sourceId
-    additionalProperties: false
-    description: "This type provides the requester with the ability to obtain the results of an enrichment response. The RC\nreturns the document either on request of the MC or in an unsolicited fashion.\nThe MC expects to get all defined attributes for the corresponding mailpiece from the RC System."
-    $id: null
-  ShapeType:
-    type: string
-    enum:
-      - CUBIC
-      - IRREGULAR
-    $id: null
-  SubmitMailpiecePAR:
-    type: object
-    properties:
-      imageKey:
-        type: string
-        description: 'Key assigned to an image (PicId)'
-        maxLength: 200
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nDefines the sorting process."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\r\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      idTag:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute idTags. Attribute will be removed in future releases when all target systems use the new field idTags.\r\nRepresents a long living identifier for the mail item"
-        maxLength: 200
-      timestamp:
-        type: string
-        description: 'Timestamp of data collection.'
-        format: date-time
-      sourceId:
-        type: string
-        description: 'Refers to a module id as event-source.'
-        pattern: '[A-Z]{3}[0-9]{2}'
-      mpAttr:
-        $ref: 'MailpieceAttr'
-        description: "The MailpieceAttrT type is assigned to the element mp_attr. It provides basic\r\nmailpiece related information:\r\n\r\n- the kind of the mail item\r\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\r\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\r\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\r\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\r\n   This result will be in accordance with the result type specified in the IC-ED interface."
-    additionalProperties: false
-    description: ""
-    required:
-      - timestamp
-      - sourceId
-    $id: null
-  SubmitMailpiece:
-    type: object
-    properties:
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nDefines the sorting process."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\r\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\r\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      idTag:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute idTags. Attribute will be removed in future releases when all target systems use the new field idTags.\r\nRepresents a long living identifier for the mail item"
-        maxLength: 200
-      timestamp:
-        type: string
-        description: 'Timestamp of data collection.'
-        format: date-time
-      sourceId:
-        type: string
-        description: 'Refers to a module id as event-source.'
-        pattern: '[A-Z]{3}[0-9]{2}'
-      mpAttr:
-        $ref: 'MailpieceAttr'
-        description: "The MailpieceAttrT type is assigned to the element mp_attr. It provides basic\r\nmailpiece related information:\r\n\r\n- the kind of the mail item\r\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\r\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\r\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\r\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\r\n   This result will be in accordance with the result type specified in the IC-ED interface."
-    required:
-      - timestamp
-      - sourceId
-    additionalProperties: false
-    $id: null
   Symbology:
     type: string
     enum:
@@ -1491,100 +1118,83 @@ definitions:
       - TEXT
     description: "NOT_RECOGNIZED The symbology is not recognized\nADDON Barcode Zusatz zu EAN und UPC\nCODABAR Barcode Codabar\nCODE_39 Barcode 39\nCODE_93 Barcode 93\nCODE_128 Barcode 128\nDATA_MATRIX Data Matrix Code\nEAN_8 International Article Number\nEAN_13 International Article Number\nEAN_128 International Article Number\nI2OF5 Interleved 2 of 5 Code\nMAXI_CODE Barcode Maxicode\nPDF_417 Barcode PDF417\nQR QR Barcode\nUPC_A Barcode Universal Product Codes (Normalversion)\nUPC_E Barcode Universal Product Codes (Kurzvariante)\nTEXT Text block (for example Postcode or AreaNumber for FLAT_BUNDLE)"
     $id: null
-  DateTime:
-    type: string
-    description: "<a href=\"https://swagger.io/docs/specification/data-models/data-types/#string\">String @format date-time</a>,\nas defined by <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339, section 5.6</a>,\nfor example: <code>2014-05-22T10:42:42.542+00:00</code>."
-    format: date-time
-    $id: null
-  TransmitMailpieceAttributes:
+  SynchronizeRequest:
     type: object
     properties:
+      timestamp:
+        type: string
+        description: 'The date+timestamp which identifies the point in time, when control requested the synchronization of the device.'
+        format: date-time
       locationKey:
         type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nDefines the sorting process."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      timestamp:
-        $ref: 'DateTime'
-        description: 'Timestamp of data collection.'
-      addressResult:
-        $ref: 'AddressResult'
-      weight:
-        $ref: 'Weight'
-        description: "[DEPRECATED] Only used by the sorting machine in the legacy parcel center\nParcel weight."
     required:
       - timestamp
+      - locationKey
     additionalProperties: false
-    description: 'This type contains the result for a mail piece that has been determined by the RC System.'
+    description: "Requests the machine to synchronize with control. The machine must send the following information:\n- The status of the machine and its modules\n- All active alarm messages\n- All current parameter values\nInformation does not need to be published if the full state is published as RETAINED."
     $id: null
-  UpdateMailpieceAttributes:
+  TrackEventType:
+    type: string
+    enum:
+      - UNKNOWN
+      - READ
+      - INDUCTION
+      - TRACK
+      - DISCHARGE
+      - READ_BULK
+    description: "Defines the track event type.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- READ: Event occured when reading at the tunnel\n- INDUCTION: Event occurred during induction\n- TRACK: Event occurred on the sorter\n- DISCHARGE: Event occurred during discharge\n- READ_BULK: Event occured when reading Bulk"
+    $id: null
+  UUID:
+    type: string
+    description: "<a href=\"https://swagger.io/docs/specification/data-models/data-types/#string\">String @format uuid</a>\n(even '@format uuid' is not specified)."
+    format: uuid
+    $id: null
+  TrackEvent:
     type: object
     properties:
-      locationKey:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nUnique identifier of the sorting center (ONRP)."
-        maxLength: 200
-      sortingProcess:
-        $ref: 'SortingProcess'
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nDefines the sorting process."
-      processingItemId:
-        type: string
-        description: "[ACTION] Attribute is required in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 32
-      mailpieceId:
-        type: string
-        description: "[DEPRECATED] Is replaced by the attribute processingItemId. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nThe machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems."
-        maxLength: 200
-      idTag:
-        type: string
-        description: "Represents a long living identifier for the mail item\n[DEPRECATED] Is replaced by the attribute idTags. Attribute will be removed in future releases when all target systems use the new field idTags."
-        maxLength: 200
       timestamp:
         type: string
-        description: 'Timestamp of data collection.'
+        description: 'The date+timestamp which identifies the point in time, where the information was generated, including milliseconds.'
         format: date-time
+      locationKey:
+        type: string
+        description: 'Unique identifier of the sorting center.'
+        maxLength: 200
+      eventType:
+        $ref: 'TrackEventType'
+        description: 'The type of Track Event'
+      processPoint:
+        type: string
+        description: 'The location where the information was generated. (Siehe Anlagen Bezeichnungskonzept)'
+      sortingProcess:
+        $ref: 'SortingProcess'
+        description: 'Defines the sorting process.'
+      processingItemId:
+        type: string
+        description: 'The machine specific identifier to track a mail item during a machine sorting cycle. The identifier is used to synchronize the data events between coding and sorting systems.'
+        maxLength: 32
       sourceId:
         type: string
-        description: 'Refers to a module id as event-source.'
+        description: 'Refers to a module id as event-source, e.g. DWS02'
         pattern: '[A-Z]{3}[0-9]{2}'
-      weight:
-        type: integer
-        description: 'Weight of the mail piece in [g].'
-        maxLength: 6
-      sortBin:
-        type: integer
-        description: "The name of the outlet to which the machine physically sorted the mail piece.\nThe outlet name is a 4 digit number."
-        maxLength: 4
-      code:
-        type: integer
-        description: "The destination sort code is the outlet group name (Virtuelles Ziel) assigned to the mail piece.\nSpecific values are defined on a per-program basis."
-        maxLength: 3
-      finalCoded:
-        type: boolean
-        description: "A boolean value indicating whether or not processing for a mail piece is complete.\n\n- false: mail piece was discharged\n- true: Discharging was verified"
-      sortReason:
-        $ref: 'SortReason'
-        description: 'Only used when the sorting machine decided to sort the mail piece based on the sort reason.'
-      recirculations:
-        type: integer
-        description: 'The number of recirculations of the mail item on the sorter.'
+      blockId:
+        $ref: 'UUID'
+        description: 'Identifier to track a group of parcels.'
+      mailpieceAttributes:
+        $ref: 'MailpieceAttr'
+        description: "<b>Dependency:</b> The MailpieceAttrT type is imported from cen-mc-rc-stream-api where it is used for the submit-mailpiece topic\nThe MailpieceAttrT type provides basic mailpiece related information:\n- the kind of the mail item\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\n   This result will be in accordance with the result type specified in the IC-ED interface."
     required:
       - timestamp
+      - locationKey
+      - eventType
+      - processPoint
+      - sortingProcess
+      - processingItemId
       - sourceId
-      - sortBin
-      - finalCoded
     additionalProperties: false
-    description: "# GER-TODO\n\nDer Dienst ermöglicht der MC, aktualisierte oder zusätzliche Informationen in Bezug auf eine Postsendung zu übertragen,\ndie dem RC- System bereits vorgelegt worden ist. Solange sich die Postsendung zur Verarbeitung in der Maschine befindet, kann dieser\nDienst von der MC mehrfach ausgeführt werden.\nFür einen Sortierablauf ohne das Einscannen von Bildern (z.B.stationäre Bearbeitung im Zielfrachtzentrum oder Sortierung in der\nReihenfolge der Zustellung) kann mit diesem Dienst die Behälternummer zur Verfügung gestellt werden, in den die\nPostsendung physikalisch einsortiert wird; für diesen Fall muss kein submitMailpiece ausgeführt werden."
+    description: 'The track event of an parcel. The event will be used for statistic purpose.'
     $id: null
   WeightMeasurementState:
     type: object
