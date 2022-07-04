@@ -5,7 +5,7 @@ info:
   contact:
     name: 'Kay Herzam (Swiss Post)'
     email: kay.herzam@post.ch
-  version: 7.1.0-feature-add-location-key.1
+  version: 7.1.0-feature-add-location-key.2
 host: 'server:1883'
 basePath: mqtt
 parameters:
@@ -1133,6 +1133,7 @@ definitions:
       - timestamp
       - locationKey
     additionalProperties: false
+    description: "Requests the machine to synchronize with control. The machine must send the following information:\n- The status of the machine and its modules\n- All active alarm messages\n- All current parameter values\nInformation does not need to be published if the full state is published as RETAINED."
     $id: null
   TrackEventType:
     type: string
