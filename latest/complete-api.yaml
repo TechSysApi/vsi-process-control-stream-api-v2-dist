@@ -5,7 +5,7 @@ info:
   contact:
     name: 'Kay Herzam (Swiss Post)'
     email: kay.herzam@post.ch
-  version: 7.1.0
+  version: 7.2.0-feature-read-rates-definition.1
 host: 'server:1883'
 basePath: mqtt
 parameters:
@@ -283,38 +283,6 @@ paths:
         default:
           schema: {$ref: 'RequestStatus'}
 definitions:
-  BarCodeStatus:
-    type: string
-    enum:
-      - NO_BARCODE
-      - DETECTED_AND_RECOGNIZED
-      - DETECTED_AND_NOT_RECOGNIZED
-    description: "# Description\n\nThis type defines the states a barcode can have.\n\n**NO_BARCODE**: The barcode symbol or the code value could not be detected.\n\n**DETECTED_AND_RECOGNIZED**: The barcode/matrix code matches at least one of the below patterns / validation rules\n\n**DETECTED_AND_NOT_RECOGNIZED**: The barcode/matrix code matches none of the below patterns / validation rules\n\n---\n\nOnly recognized barcodes/matrix codes such as productCodes should be used by consuming systems.\n\nNot recognized barcodes can be useful:\n- in case of new barcode formats\n- for systems outside of PL sorting systems\n- for (error) analysis\n\n# Patterns/ Validation Rules:\n\n## CODE_128\n\n   1. **Internationaler Barcode**\n\n       Beispiel: EP923689367CH  \n       Validierung: `[A-Z]{2}[0-9]{9}[A-Z]{2}` (13 Zeichen)\n\n   2. **Nationaler Barcode**\n\n       Beispiel: 994214393000008666  \n       Validierung: `(98|99)[0-9]{16}` (18 Zeichen)\n\n   3. **Produktcode: PRZL (Produkt/Zusatzleistungen)**\n\n       Beispiel: 0509  \n       Validierung: `[0-9]{4}` (4 Zeichen)\n\n   3. **BoxId**\n\n       Erste zwei Ziffern: Typ der Box: «45» für ThermoCare-Box, Letzte sechs Ziffern: Seriennummer der Box\n       Beispiel: 45093456\n       Validierung: `[0-9]{8}` (8 Zeichen)\n\n   4. **Förderhilfentyp**\n\n       Format: Erste zwei Ziffern: Typ der Förderhilfe, Letzte vier Ziffern: Gewicht der Förderhilfe in Gramm\n       Beispiel: 020450\n       Validierung: `[0-9]{6}` (6 Zeichen)\n\n## DATA_MATRIX \nDatenfeld: Data Matrix \n- Validierung: ECC200\nBeispiel: 756109025843770000010000000000000000000003489510005501606300\nValidierung: ECC200 (Max. 90 Zeichen)"
-    $id: null
-  BarCodeSymbology:
-    type: string
-    enum:
-      - CODE_128
-      - DATA_MATRIX
-    description: 'Provides the valid symbologies of a barcode label'
-    $id: null
-  BarCode:
-    type: object
-    properties:
-      type:
-        $ref: 'BarCodeSymbology'
-        description: 'Provides the valid symbologies of a barcode label.'
-      value:
-        type: string
-        description: 'This element contains the value of the barcode.'
-      status:
-        $ref: 'BarCodeStatus'
-        description: 'This element contains the status of the barcode.'
-    required:
-      - status
-    additionalProperties: false
-    description: 'This type contains a barcode.'
-    $id: null
   BinOccupancyState:
     type: object
     properties:
@@ -578,7 +546,7 @@ definitions:
     additionalProperties: false
     description: "To specify a region location, the region descriptor LocationT listed subsequently is used. LocationT encloses\nno information about the image orientation. The image orientation is specified in the TIFF header. Region\ncoordinates are given in pixel and are related to the image origin which corresponds to the upper left corner.\nThe coordinates are independent of the TIFF orientation."
     $id: null
-  MailpieceAttr:
+  MailpieceAttributes:
     type: object
     properties:
       type:
@@ -678,7 +646,7 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: 'Unique identifier of the sorting center (ONRP).'
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
       messages:
         type: array
@@ -877,11 +845,11 @@ definitions:
         description: 'The location where the information was generated. (Siehe Anlagen Bezeichnungskonzept)'
       total:
         type: integer
-        description: 'Total number of parcel passed the reading device.'
+        description: 'Total number of malipieces that passed the reading device.'
         minimum: 0
       read:
         type: integer
-        description: 'Number of parcel successfully read at processpoint and the cen-mc-rc.submit-mailpiece event has been sent to the coding system.'
+        description: "Number of mailpieces successfully read at processpoint excluding the following:\n- Read status is faulty, e.g. shading, barcode not recognisable\n- SortReason.SCANNER_TIMEOUT"
         minimum: 0
     required:
       - processPoint
@@ -914,19 +882,11 @@ definitions:
   RecognitionResult:
     type: object
     properties:
-      multipleMailpiecdIdRecognized:
-        type: boolean
-        description: "[DEPRECATED] Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nIf true, multiple identcodes were recognized by the camera."
       informationCarriers:
         type: array
         items:
           $ref: 'InformationCarrier'
         description: "Contains the data from the information carrier identified by the reading system.\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
-      barCodes:
-        type: array
-        items:
-          $ref: 'BarCode'
-        description: "[DEPRECATED] Is replaced by the attribute informationCarriers. Attribute will be removed in future releases after WESort is rolled out in all sorting centers.\nContains all barcodes/matrix codes identified by the reading system.\nThe reading system should read and send all available barcodes/matrix codes. The consuming systems will apply further classification and filtering."
       location:
         $ref: 'Location'
       dimension:
@@ -987,40 +947,12 @@ definitions:
         format: date-time
       locationKey:
         type: string
-        description: 'Unique identifier of the sorting center (ONRP).'
+        description: 'Unique identifier of the sorting center.'
         maxLength: 200
     required:
       - timestamp
       - locationKey
     additionalProperties: false
-    $id: null
-  SortReason:
-    type: string
-    enum:
-      - UNKNOWN
-      - OK
-      - MAX_RECIRCULATION
-      - ITEM_NO_READ
-      - ITEM_MULTIPLE_READ
-      - SCANNER_TIMEOUT
-      - ITEM_STRAY
-      - ITEM_INDUCTION_ERROR
-      - ITEM_DISCHARGE_ERROR
-      - ITEM_ERROR
-      - ITEM_TRACKING_ERROR
-      - ITEM_OCCUPIED_TWICE_ERROR
-      - ITEM_DISAPPEARED
-      - OUTLET_NOT_AVAILABLE
-      - OUTLET_UNKNOWN
-      - UNDEFINED_ERROR
-      - NO_CAPACITY
-      - DIMENSION_ERROR
-      - WEIGHT_ERROR
-      - SORTPLAN_ERROR
-      - DIRECT_SORTING_MODE
-      - ITEM_NO_SORTCODE
-      - OUTLET_MISSED
-    description: "Defines the machine specific sort reasons.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- OK: Discharge OK. This describes just a \"regular\" item\n- MAX_RECIRCULATION: Item has reached the max allowed amount of recirculations.\n- ITEM_NO_READ: Item has reached the max allowed amount of scans and the last attempt was a no read.\n- ITEM_MULTIPLE_READ: Multiple national or international id barcodes could be identified.\n- SCANNER_TIMEOUT: Item has reached the max allowed amount of scans and the last attempt was a \"no answer\" from scanner.\n- ITEM_STRAY: Stray item detected.\n- ITEM_INDUCTION_ERROR: Induction error item detected (occupied twice, wrong tray).\n- ITEM_DISCHARGE_ERROR: Discharge faults.\n- ITEM_ERROR: Item has a Logical error.\n- ITEM_TRACKING_ERROR: item was inducted with tracking fault.\n- ITEM_OCCUPIED_TWICE_ERROR: item was inducted on occupied tray.\n- ITEM_DISAPPEARED: The parcel was lost at unknown location.\n- OUTLET_NOT_AVAILABLE: No available chute could be found.\n- OUTLET_UNKNOWN: Logical destination not defined.\n- UNDEFINED_ERROR: Internal error happened.\n- NO_CAPACITY: The destination outlet has no more capacity.\n- DIMENSION_ERROR: Item oversize. The parcel was discharge, because of dimension exceed.\n- WEIGHT_ERROR: Item too heavy. The parcel was discharge, because of weight exceed.\n- SORTPLAN_ERROR: Sortplan error.\n- DIRECT_SORTING_MODE: Item sorted by the direct sorting mode.\n- ITEM_NO_SORTCODE: No sortcode has been received for this item.\n- OUTLET_MISSED: Sortcode has been updated (push or repetitive requests), physical outlet already passed."
     $id: null
   SortingProcess:
     type: string
@@ -1183,8 +1115,8 @@ definitions:
         $ref: 'UUID'
         description: 'Identifier to track a group of parcels.'
       mailpieceAttributes:
-        $ref: 'MailpieceAttr'
-        description: "<b>Dependency:</b> The MailpieceAttrT type is imported from cen-mc-rc-stream-api where it is used for the submit-mailpiece topic\nThe MailpieceAttrT type provides basic mailpiece related information:\n- the kind of the mail item\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\n   This result will be in accordance with the result type specified in the IC-ED interface."
+        $ref: 'MailpieceAttributes'
+        description: "Provides basic mailpiece related information:\n\n- the kind of the mail item\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\n   This result will be in accordance with the result type specified in the IC-ED interface."
     required:
       - timestamp
       - locationKey
