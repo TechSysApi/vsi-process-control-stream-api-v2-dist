@@ -5,7 +5,7 @@ info:
   contact:
     name: 'Kay Herzam (Swiss Post)'
     email: kay.herzam@post.ch
-  version: 7.2.0-feature-read-rates-definition.2
+  version: 7.2.0-feature-read-rates-definition.3
 host: 'server:1883'
 basePath: mqtt
 parameters:
@@ -954,6 +954,17 @@ definitions:
       - locationKey
     additionalProperties: false
     $id: null
+  SortReason:
+    type: string
+    enum:
+      - OK
+      - FALLBACK_OUTLET
+      - ITEM_DISAPPEARED
+      - DIMENSION_ERROR
+      - WEIGHT_ERROR
+      - DIRECT_SORTING_MODE
+    description: "Defines the machine specific sort reasons.\nList of values:\n- OK: Discharge OK. This describes just a \"regular\" item.\n- FALLBACK_OUTLET: Item has reached the max allowed amount of recirculations or end of line on a linear sorter.\n- ITEM_DISAPPEARED: The parcel was lost at unknown location.\n- DIMENSION_ERROR: Item oversize. The parcel was discharge, because of dimension exceed.\n- WEIGHT_ERROR: Item too heavy. The parcel was discharge, because of weight exceed.\n- DIRECT_SORTING_MODE: Item sorted by the direct sorting mode."
+    $id: null
   SortingProcess:
     type: string
     enum:
@@ -1114,6 +1125,9 @@ definitions:
       blockId:
         $ref: 'UUID'
         description: 'Identifier to track a group of parcels.'
+      dischargeReason:
+        $ref: 'SortReason'
+        description: 'Only used when the sorting machine decided to sort the mail piece based on the sort reason.'
       mailpieceAttributes:
         $ref: 'MailpieceAttributes'
         description: "Provides basic mailpiece related information:\n\n- the kind of the mail item\n- the mailclass of the mail item; important for the ED because it and may affect the address recognition\n- the scanned faces of the mail item. The FaceSetT type is assigned to faces and allows providing a sequence of faces.\n   The FaceSetT types allows to link a face with the corresponding image by a page attribute.\n- a preknowledge result if a barcode reader or some other type of Enrichment Device is directly attached to the MC.\n   This result will be in accordance with the result type specified in the IC-ED interface."
@@ -1125,6 +1139,7 @@ definitions:
       - sortingProcess
       - processingItemId
       - sourceId
+      - dischargeReason
     additionalProperties: false
     description: 'The track event of an parcel. The event will be used for statistic purpose.'
     $id: null
