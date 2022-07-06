@@ -5,7 +5,7 @@ info:
   contact:
     name: 'Kay Herzam (Swiss Post)'
     email: kay.herzam@post.ch
-  version: 7.2.0
+  version: 7.3.0
 host: 'server:1883'
 basePath: mqtt
 parameters:
@@ -307,14 +307,12 @@ definitions:
       - conveyingAidDetected
     additionalProperties: false
     description: "Doppelbelegung / Leerschalen-kontrolle\nemptyBinOccupied: Belegte Leerschale\nbinMultipleItemOccupied: Doppelbelegung - Erkennung der Schalenbelegung von DWS\nfrontOverlappingLimitExceeded: Überstand vorne zu groß\nbackOverlappingLimitExceeded: Überstand hinten zu groß\nmultipleItemsDetected: >= 2 Objekt erkannt\nconveyingAidDetected: Förderhilfe erkannt"
-    $id: null
   ClientState:
     type: string
     enum:
       - CONNECTED
       - DISCONNECTED
       - BROKEN
-    $id: null
   ClientStatus:
     type: object
     properties:
@@ -333,14 +331,12 @@ definitions:
       - timestamp
       - locationKey
     additionalProperties: false
-    $id: null
   DimensionMeasurementRangeType:
     type: string
     enum:
       - INSIDE
       - OUTSIDE
     description: "- INSIDE: Object is within the measurement range\n- OUTSIDE: Object is outside of the measurement range"
-    $id: null
   DimensionMeasurementResultType:
     type: string
     enum:
@@ -348,7 +344,6 @@ definitions:
       - NOK
       - NOT_RECOGNIZED
     description: "Measurement result state.\n\n- OK: Measurement VMS ok\n- NOK: Measurement VMS not ok\n- NOT_RECOGNIZED: No object recognized"
-    $id: null
   DimensionMeasurementState:
     type: object
     properties:
@@ -364,7 +359,6 @@ definitions:
       - itemSizeClassification
     additionalProperties: false
     description: 'State of the measurement.'
-    $id: null
   Dimension:
     type: object
     properties:
@@ -381,7 +375,6 @@ definitions:
         $ref: 'DimensionMeasurementState'
     additionalProperties: false
     description: 'Dimension measurement of the mail piece'
-    $id: null
   FillLevel:
     type: object
     properties:
@@ -417,7 +410,6 @@ definitions:
       - destinationReject
     additionalProperties: false
     description: 'The actual fill level of the parcel sorter. The fill level will be used for visualization and control purposes.'
-    $id: null
   FillLevels:
     type: object
     properties:
@@ -439,7 +431,6 @@ definitions:
       - fillLevels
     additionalProperties: false
     description: 'Contains an array of fill levels.'
-    $id: null
   HardwareRebootRequest:
     type: object
     properties:
@@ -455,7 +446,6 @@ definitions:
       - timestamp
       - locationKey
     additionalProperties: false
-    $id: null
   InformationCarrier:
     type: object
     properties:
@@ -470,7 +460,6 @@ definitions:
       - value
     additionalProperties: false
     description: 'Identified and captured information carrier (e.g. barcodes, logos)'
-    $id: null
   ItemSizeClassificationType:
     type: object
     properties:
@@ -488,7 +477,6 @@ definitions:
       - oversized
       - undersized
     additionalProperties: false
-    $id: null
   LegalForTradeState:
     type: object
     properties:
@@ -511,7 +499,6 @@ definitions:
       - weightError
     additionalProperties: false
     description: "Detailed information on legal for trade relevant measurements.\n\n- If all flags are false, the measurements are legal for trade.\n- If only weightError is true, dimension measurement is legal for trade.\n- If only dimensionError is true, weight measurement is legal for trade.\n- Otherwise, measurements are not legal for trade."
-    $id: null
   LegalForTrade:
     type: object
     properties:
@@ -533,7 +520,6 @@ definitions:
         $ref: 'LegalForTradeState'
     additionalProperties: false
     description: 'Customs information'
-    $id: null
   Location:
     type: object
     properties:
@@ -545,7 +531,6 @@ definitions:
         description: "Achtung: Die Punkte in Förderrichtung durchnummeriert, im Unterschied zum CEN-Standard, wo sie im (Gegen-)Uhrzeigersinn ausgerichtet sind.\nDie Punkte werden wie folgt ermittelt/ausgegeben:\nerster Punkt in Förde-richtung ist der Start-punkt gezählt wird fortlaufend in Förderichtung (nicht Uhrzeigersinn)\nalle Angaben sind bezogen auf den Triggernullpunkt (= Schalenanfang) ‚x’ wird in Förderrichtung ermittelt; ‚y’ quer zur Förderrichtung"
     additionalProperties: false
     description: "To specify a region location, the region descriptor LocationT listed subsequently is used. LocationT encloses\nno information about the image orientation. The image orientation is specified in the TIFF header. Region\ncoordinates are given in pixel and are related to the image origin which corresponds to the upper left corner.\nThe coordinates are independent of the TIFF orientation."
-    $id: null
   MailpieceAttributes:
     type: object
     properties:
@@ -559,7 +544,6 @@ definitions:
       - type
     additionalProperties: false
     description: "This type is taken from CEN/TS 15448 and extended by a “preknowledge” element.\nThe type MailpieceAttrT specifies basic mailpiece attributes."
-    $id: null
   MailpieceFace:
     type: string
     enum:
@@ -573,7 +557,6 @@ definitions:
       - FRONT_RIGHT
       - REAR_LEFT
       - REAR_RIGHT
-    $id: null
   MailpieceType:
     type: string
     enum:
@@ -584,7 +567,6 @@ definitions:
       - FLAT_BUNDLE
       - PARCEL
     description: "Defines the mailpiece type.\nUNKNOWN Unknown mailpiece type for the sorter\nLETTER Mail item (Brief)\nLETTER_BUNDLE Not supported\nFLAT Big letters mostly from China (Kleinware)\nFLAT_BUNDLE Bundle of mail items (Bund)\nPARCEL Parcel item (Paket)"
-    $id: null
   MessagePriority:
     type: string
     enum:
@@ -592,7 +574,6 @@ definitions:
       - WARNING
       - ALARM
       - ERROR
-    $id: null
   MessageState:
     type: string
     enum:
@@ -600,7 +581,6 @@ definitions:
       - APPEAR
       - DISAPPEAR
     description: "Defines the alarm states.\nList of values:\n- NONE: used for events which occur at a specific timestamp\n- APPEAR / DISAPPEAR: used for events which can appear for a certain time slice."
-    $id: null
   Message:
     type: object
     properties:
@@ -636,7 +616,6 @@ definitions:
       - text
     additionalProperties: false
     description: 'A message is a textual string giving some reasonable information to a message tracking system of the Mail Information System. The group "Messages" implements the messages (errors, alarms, warnings, informations) generated by a piece of mail processing equipment (MPE). The message parameters defined above are the attributes of this group. This group is defined to be a notifylist. When a new message is created, a new element of this notifylist is created. The machine has to store all messages until the message has been successfully handled by the JMS server (as any Notifylist element, this is a general mechanism for Notifylists). The storage timeframe has to be adjustable to project needs, depending on the availability of the MIS role (normally in the range of half an hour up to 3 hours). Associated to the Message Id, there must be a (language dependent) message text, which has a Java-Text like escape character notation (%1, $1) that allows the text assembly with the provided sequence of (string) parameters. Note that the numbers the escape characters start with 1and that string parameters cannot be translated, they will normally be numbers passed as strings. The interpretation is done according to the escape parameters inside the message text. The Text parameter is only displayed if no language dependent message text can be found for a given Id. The general XML mapping of this element is Messages. As this is a NotifylistElement the header will hold a timestamp that indicates when the problem occured.'
-    $id: null
   Messages:
     type: object
     properties:
@@ -658,7 +637,6 @@ definitions:
       - messages
     additionalProperties: false
     description: 'Used to send message (alarms) from the device to the control.'
-    $id: null
   ModuleState:
     type: object
     properties:
@@ -672,7 +650,6 @@ definitions:
       - name
       - value
     additionalProperties: false
-    $id: null
   OverallState:
     type: object
     properties:
@@ -700,7 +677,6 @@ definitions:
       - moduleStates
     additionalProperties: false
     description: 'Contains an overall machine state and a list of (sub) moduleStates.'
-    $id: null
   ParameterMetadata:
     type: object
     properties:
@@ -724,7 +700,6 @@ definitions:
       - parameters
     additionalProperties: false
     description: 'Contains exactly one main element, based on the use case (XOR).'
-    $id: null
   ParameterType:
     type: string
     enum:
@@ -735,7 +710,6 @@ definitions:
       - TIME
       - DATE_TIME
     description: "The type of a parameter value.\nEncoding / formatting follow the same rules as JSON encoding (i.e. String encoding = UTF8, dates = ISO 8601, booleans = true/false)"
-    $id: null
   ParameterValue:
     type: object
     properties:
@@ -754,7 +728,6 @@ definitions:
       - name
       - newValue
     additionalProperties: false
-    $id: null
   ParameterValues:
     type: object
     properties:
@@ -778,7 +751,6 @@ definitions:
       - parameterValues
     additionalProperties: false
     description: 'Contains exactly one main element, based on the use case (XOR).'
-    $id: null
   Parameter:
     type: object
     properties:
@@ -813,7 +785,6 @@ definitions:
       - type
       - description
     additionalProperties: false
-    $id: null
   PolygonDot:
     type: object
     properties:
@@ -825,7 +796,6 @@ definitions:
       - x
       - y
     additionalProperties: false
-    $id: null
   Polygon:
     type: object
     properties:
@@ -836,7 +806,6 @@ definitions:
     required:
       - dot
     additionalProperties: false
-    $id: null
   ReadRate:
     type: object
     properties:
@@ -857,7 +826,6 @@ definitions:
       - read
     additionalProperties: false
     description: 'The read rate event of an element. The counter will be used for visualization and statistic purposes.'
-    $id: null
   ReadRates:
     type: object
     properties:
@@ -878,7 +846,6 @@ definitions:
       - locationKey
     additionalProperties: false
     description: 'Contains an array of read rates.'
-    $id: null
   RecognitionResult:
     type: object
     properties:
@@ -901,14 +868,12 @@ definitions:
       binOccupancy:
         $ref: 'BinOccupancyState'
     additionalProperties: false
-    $id: null
   RequestState:
     type: string
     enum:
       - OK
       - ERROR
       - PROCESSING
-    $id: null
   RequestStatus:
     type: object
     properties:
@@ -931,13 +896,11 @@ definitions:
       - state
     additionalProperties: false
     description: 'Response of the device to a Request.'
-    $id: null
   ShapeType:
     type: string
     enum:
       - CUBIC
       - IRREGULAR
-    $id: null
   SoftwareRestartRequest:
     type: object
     properties:
@@ -953,7 +916,6 @@ definitions:
       - timestamp
       - locationKey
     additionalProperties: false
-    $id: null
   SortReason:
     type: string
     enum:
@@ -964,7 +926,6 @@ definitions:
       - WEIGHT_ERROR
       - DIRECT_SORTING_MODE
     description: "Defines the machine specific sort reasons.\nList of values:\n- OK: Discharge OK. This describes just a \"regular\" item.\n- FALLBACK_OUTLET: Item has reached the max allowed amount of recirculations or end of line on a linear sorter.\n- ITEM_DISAPPEARED: The parcel was lost at unknown location.\n- DIMENSION_ERROR: Item oversize. The parcel was discharge, because of dimension exceed.\n- WEIGHT_ERROR: Item too heavy. The parcel was discharge, because of weight exceed.\n- DIRECT_SORTING_MODE: Item sorted by the direct sorting mode."
-    $id: null
   SortingProcess:
     type: string
     enum:
@@ -974,7 +935,6 @@ definitions:
       - MANUAL_CODING_BULK
       - MANUAL_CODING_BULK_AUTOMATIC
     description: "Defines the sorting process.\nAUTOMATIC Sorted by the sorter\nMANUAL_CODING_REJECT Device where a coder manually captures barcodes and enters address information\nMANUAL_CODING_LIGHT Device where barcodes barcodes, products and the weight is captured (manual or partially automated)\nMANUAL_CODING_BULK Device where barcodes, weight and dimensions and address information for bulky goods are captured or entered (manual or partially automated)\nMANUAL_CODING_BULK_AUTOMATIC Device where a coder manually captures barcodes and other specific information for bulky goods"
-    $id: null
   StatisticsType:
     type: string
     enum:
@@ -988,7 +948,6 @@ definitions:
       - SPECIAL_DESTINATION
       - ACS_STAT
     description: "StatisticsType defines the contents in the statistics values.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- INDUCTION: induction statistics (Einschleusung-Statistik)\n- CHUTE: physical sort destination statistics (Endstellen-Statistik).\n- SCANNER: scanner statistics (DWS-Statistik).\n- SORTER: Up- and Downtime statistics (Sorter Verfügbarkeit-Statistik).\n- TRAY_STAT: tray load statistics (Schalenauslastung-Statistik).\n- DESTINATION_STAT: logical sort destination statistics (Zielstatistik).\n- SPECIAL_DESTINATION: special sort statistics (Sonderziel- / Fehlerart-Statistik).\n- ACS_STAT: Automatic Coding System statistics (Codiersystem-Statistik)"
-    $id: null
   Statistics:
     type: object
     properties:
@@ -1009,7 +968,6 @@ definitions:
       - locationKey
     additionalProperties: false
     description: 'Used to send statistics data from the device to the control.'
-    $id: null
   Stats:
     type: object
     properties:
@@ -1038,7 +996,6 @@ definitions:
       - values
     additionalProperties: false
     description: 'The statistic event of an element. The statistic will be used for visualization and control purposes.'
-    $id: null
   Symbology:
     type: string
     enum:
@@ -1060,7 +1017,6 @@ definitions:
       - UPC_E
       - TEXT
     description: "NOT_RECOGNIZED The symbology is not recognized\nADDON Barcode Zusatz zu EAN und UPC\nCODABAR Barcode Codabar\nCODE_39 Barcode 39\nCODE_93 Barcode 93\nCODE_128 Barcode 128\nDATA_MATRIX Data Matrix Code\nEAN_8 International Article Number\nEAN_13 International Article Number\nEAN_128 International Article Number\nI2OF5 Interleved 2 of 5 Code\nMAXI_CODE Barcode Maxicode\nPDF_417 Barcode PDF417\nQR QR Barcode\nUPC_A Barcode Universal Product Codes (Normalversion)\nUPC_E Barcode Universal Product Codes (Kurzvariante)\nTEXT Text block (for example Postcode or AreaNumber for FLAT_BUNDLE)"
-    $id: null
   SynchronizeRequest:
     type: object
     properties:
@@ -1077,7 +1033,6 @@ definitions:
       - locationKey
     additionalProperties: false
     description: "Requests the machine to synchronize with control. The machine must send the following information:\n- The status of the machine and its modules\n- All active alarm messages\n- All current parameter values\nInformation does not need to be published if the full state is published as RETAINED."
-    $id: null
   TrackEventType:
     type: string
     enum:
@@ -1088,12 +1043,10 @@ definitions:
       - DISCHARGE
       - READ_BULK
     description: "Defines the track event type.\nList of values:\n- UNKNOWN: Default enum value to map not supported values.\n- READ: Event occured when reading at the tunnel\n- INDUCTION: Event occurred during induction\n- TRACK: Event occurred on the sorter\n- DISCHARGE: Event occurred during discharge\n- READ_BULK: Event occured when reading Bulk"
-    $id: null
   UUID:
     type: string
     description: "<a href=\"https://swagger.io/docs/specification/data-models/data-types/#string\">String @format uuid</a>\n(even '@format uuid' is not specified)."
     format: uuid
-    $id: null
   TrackEvent:
     type: object
     properties:
@@ -1139,10 +1092,8 @@ definitions:
       - sortingProcess
       - processingItemId
       - sourceId
-      - dischargeReason
     additionalProperties: false
     description: 'The track event of an parcel. The event will be used for statistic purpose.'
-    $id: null
   WeightMeasurementState:
     type: object
     properties:
@@ -1178,7 +1129,6 @@ definitions:
     required:
       - isLegalForTrade
     additionalProperties: false
-    $id: null
   Weight:
     type: object
     properties:
@@ -1194,4 +1144,3 @@ definitions:
         description: 'Weighing errors'
     additionalProperties: false
     description: 'Weight measurement of the mail piece.'
-    $id: null
